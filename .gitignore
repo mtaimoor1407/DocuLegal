@@ -1,0 +1,35 @@
+# Virtual environment
+venv/
+env/
+.env
+
+# Chroma database (auto-rebuilt on run)
+doculegal_chroma_db/
+
+# Uploaded files (user data, not yours to share)
+uploaded_docs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# HuggingFace cache
+.cache/
+
+# Logs
+*.log
