@@ -1,31 +1,51 @@
+import warnings
 import os
+import logging
 import gc
 import time
-import streamlit as st
-from dotenv import load_dotenv
 
-from core.loader     import load_multiple_pdfs, save_uploaded_file
-from core.chunker    import create_parent_child_chunks, update_doc_info_chunk_count
+warnings.filterwarnings("ignore")
+logging.getLogger("transformers").setLevel(logging.ERROR)
+os.environ["TOKENIZERS_PARALLELISM"]          = "false"
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+
+import streamlit as st
+
+# ── Load secrets ──────────────────────────────────────────────
+# Works both locally (st.secrets from .streamlit/secrets.toml)
+# and on Streamlit Cloud (secrets set in dashboard)
+def load_secrets():
+    try:
+        # Streamlit secrets (cloud + local secrets.toml)
+        if "GROQ_API_KEY" in st.secrets:
+            os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+        if "HF_TOKEN" in st.secrets:
+            os.environ["HF_TOKEN"]     = st.secrets["HF_TOKEN"]
+            os.environ["HUGGINGFACE_HUB_TOKEN"] = st.secrets["HF_TOKEN"]
+    except Exception:
+        pass
+
+    # Fallback to .env for local development without secrets.toml
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+
+load_secrets()
+
+# rest of your imports below
+from core.loader      import load_multiple_pdfs, save_uploaded_file
+from core.chunker     import create_parent_child_chunks, update_doc_info_chunk_count
 from core.vectorstore import (
     get_embedding_model,
     build_vectorstore,
     close_vectorstore,
     get_store_stats
 )
-from core.retriever  import build_retriever
-from core.chain      import DocuLegalChain
-from utils.helpers   import format_answer_for_display
-import warnings
-import os
-import logging
-
-# Silence transformer warnings from unrelated model configs
-warnings.filterwarnings("ignore")
-logging.getLogger("transformers").setLevel(logging.ERROR)
-os.environ["TOKENIZERS_PARALLELISM"]        = "false"
-os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
-
-load_dotenv()
+from core.retriever   import build_retriever
+from core.chain       import DocuLegalChain
+from utils.helpers    import format_answer_for_display
 
 st.set_page_config(
     page_title = "DocuLegal",

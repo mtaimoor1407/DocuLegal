@@ -1,7 +1,9 @@
 langchain
 langchain-community
 langchain-openai
+langchain-groq
 langchain-chroma
+langchain-huggingface
 chromadb
 pypdf
 sentence-transformers
@@ -10,6 +12,4 @@ streamlit
 python-dotenv
 pydantic
 faiss-cpu
-langchain-groq
-langchain-google-genai
-langchain-huggingface
+huggingface-hub
